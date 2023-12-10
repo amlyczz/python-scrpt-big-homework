@@ -6,7 +6,7 @@ from data_storage import DataStorage
 
 class NewsCrawler:
     def __init__(self, is_total=False):
-        self.data_storage = DataStorage('data.csv')
+        self.data_storage = DataStorage('data/data.csv')
         self.domain = 'news.buaa.edu.cn'
         self.url_prefix = 'http://news.buaa.edu.cn/bhrw/'
         self.urls = ['http://news.buaa.edu.cn/bhrw.htm']
@@ -26,13 +26,12 @@ class NewsCrawler:
                 return None
 
             h1_tag = title_div.find('h1')
-            print(f'标题: {h1_tag.get_text()}')
+            # print(f'标题: {h1_tag.get_text()}')
             title = h1_tag.get_text()
             p_tags = content_div.find_all('p')
-            print("内容:")
+            # print("内容:")
             # 输出每个 p 标签的内容
             for p_tag in p_tags:
-                print(p_tag.get_text())
                 content.append(p_tag.get_text())
             self.data_storage.add_entry(title, content)
             print('===========================')
