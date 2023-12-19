@@ -2,10 +2,10 @@ import ast
 import re
 from collections import Counter
 
-from wordcloud import WordCloud
 import jieba as jieba
 from matplotlib import pyplot as plt
 from snownlp import SnowNLP
+from wordcloud import WordCloud
 
 import data_storage
 
@@ -76,17 +76,26 @@ class CutDrawer:
         entries = self.data_storage.read_csv()
 
         # emo统计
+        self._emo_analysis(character_list, emo_score_list, entries, num_words_list)
+
+    def _emo_analysis(self, character_list, emo_score_list, entries, num_words_list):
         for character in character_list:
             has_character = False
             for entry in entries:
                 if character in entry["Title"]:
                     has_character = True
                     # 查找相关词汇
-                    print(entry["Content"])
+                    print()
+                    print()
+                    print("entry[\"Content\"]:", entry["Content"])
                     print(f'typeEntryContent{type(entry["Content"])}')
                     actual_list = ast.literal_eval(entry["Content"])
+                    actual_list = [item for item in actual_list if item != ""]
                     print(f"acType:{type(actual_list)}")
                     print(f"actual_list:{actual_list}")
+                    print("act size: ", len(actual_list))
+                    for item in actual_list:
+                        print(item)
                     train_data = entry["Content"].split()
                     print(f'train_data:{train_data}')
                     print("type", type(train_data))
@@ -100,7 +109,6 @@ class CutDrawer:
         print(emo_score_list)
         print(len(character_list), len(emo_score_list))
         plt.bar(character_list, emo_score_list, color='blue')
-
         # 设置标题和坐标轴标签
         plt.title('上下文情感分析')
         plt.xlabel('名称')
@@ -111,15 +119,17 @@ class CutDrawer:
         # 词频统计
         word_freq = Counter(word_list)
         top_words = word_freq.most_common(15)
+        cloud_top_words = word_freq.most_common(1000)
         labels, values = zip(*top_words)
-        word_cloud_map = {k: int(v) for k, v in top_words}
+        word_cloud_map = {k: int(v) for k, v in cloud_top_words}
         plt.figure(figsize=(10, 6))
         plt.bar(labels, values, color='skyblue')
         plt.xlabel('词汇')
         plt.ylabel('词频')
         plt.title('词频统计')
         plt.xticks(rotation=45)
-        print(word_cloud_map)
+
+        # 词云统计
         wordcloud = WordCloud(font_path='C:\\Windows\\Fonts\\msyh.ttc', width=800, height=400,
                               background_color='white').generate_from_frequencies(
             word_cloud_map)

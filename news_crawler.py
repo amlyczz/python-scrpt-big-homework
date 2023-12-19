@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 
+from cut_drawer import CutDrawer
 from data_storage import DataStorage
 
 
@@ -63,3 +64,5 @@ class NewsCrawler:
 if __name__ == '__main__':
     news_crawler = NewsCrawler(is_total=True)
     news_crawler.crawl()
+    cut_drawer = CutDrawer()
+    cut_drawer.cut_and_draw()
